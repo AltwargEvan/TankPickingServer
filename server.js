@@ -1,36 +1,52 @@
-const express = require("express");
-const cors = require('cors')
-const { ApolloServer } = require("apollo-server-express");
-const { createServer } = require("http");
-const { execute, subscribe } = require("graphql");
-const { SubscriptionServer } = require("subscriptions-transport-ws");
-const { makeExecutableSchema } = require("@graphql-tools/schema");
-const resolvers = require("./src/resolvers");
-const typeDefs = require("./src/typeDefs");
+import express from "express";
+import { graphqlHTTP } from 'express-graphql';
+import cors from 'cors'
+import { createServer } from "http";
+import { execute, subscribe } from "graphql";
+import { SubscriptionServer } from "subscriptions-transport-ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import resolvers from "./src/resolvers.js";
+import typeDefs from "./src/typeDefs.js";
 
-(async function () {
-  const app = express();
-  app.use(cors())
-  const httpServer = createServer(app);
+const PORT = 4000
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers,
+});
 
-  const schema = makeExecutableSchema({
-    typeDefs,
-    resolvers,
-  });
+var app = express();
+app.use(cors())
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    graphiql: { subscriptionEndpoint: `ws://localhost:${PORT}/subscriptions` },
+  }),
+);
 
-  const server = new ApolloServer({
-    schema,
-  });
-  await server.start();
-  server.applyMiddleware({ app });
+const ws = createServer(app);
 
-  SubscriptionServer.create(
-    { schema, execute, subscribe },
-    { server: httpServer, path: server.graphqlPath }
+ws.listen(PORT, () => {
+  // Set up the WebSocket for handling GraphQL subscriptions.
+  new SubscriptionServer(
+    {
+      execute,
+      subscribe,
+      schema,
+    },
+    {
+      server: ws,
+      path: '/subscriptions',
+    },
   );
-
-  const PORT = 4000;
-  httpServer.listen(PORT, () =>
-    console.log(`Server is now running on http://localhost:${PORT}/graphql`)
+  console.log(
+    `🚀 Query endpoint ready at http://localhost:${PORT}/graphql`
   );
-})();
+  console.log(
+    `🚀 Subscription endpoint ready at ws://localhost:${PORT}/subscriptions`
+  );
+  console.log(
+    `🚀 Apollo Sandbox at https://studio.apollographql.com/sandbox/explorer`
+  );
+});
+

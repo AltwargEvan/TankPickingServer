@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express')
+import { gql } from 'apollo-server-express'
 const typeDefs = gql`
   type Match {
     maps: [String]
@@ -68,5 +68,4 @@ const typeDefs = gql`
     matchUpdated(key: String!): Match!
   }
 `
-
-module.exports = typeDefs
+export default typeDefs
