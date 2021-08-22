@@ -50,3 +50,4 @@ ws.listen(PORT, () => {
   );
 });
 
+module.exports = app
