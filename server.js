@@ -6,6 +6,7 @@ const cors = require('cors')
 const { createServer } = require("http");
 const { execute, subscribe } = require("graphql");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
+
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const resolvers = require("./src/resolvers.js");
 const typeDefs = require("./src/typeDefs.js");
@@ -29,7 +30,7 @@ app.get('*', expressPlayground({ endpoint: '/graphql' }))
 
 const ws = createServer(app);
 
-ws.listen(PORT, () => {
+ws.listen(process.env.PORT || PORT, () => {
   // Set up the WebSocket for handling GraphQL subscriptions.
   new SubscriptionServer(
     {
