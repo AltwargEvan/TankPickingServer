@@ -49,5 +49,3 @@ ws.listen(PORT, () => {
     `🚀 Apollo Sandbox at https://studio.apollographql.com/sandbox/explorer`
   );
 });
-
-module.exports = app
