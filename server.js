@@ -6,6 +6,7 @@ const cors = require('cors')
 const { createServer } = require("http");
 const { execute, subscribe } = require("graphql");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
+const path = require('path')
 
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const resolvers = require("./src/resolvers.js");
@@ -26,7 +27,11 @@ app.use(
     graphiql: { subscriptionEndpoint: `ws://localhost:${PORT}/subscriptions` },
   }),
 );
-app.get('*', expressPlayground({ endpoint: '/graphql' }))
+app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
+app.use(express.static('build'))
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+})
 
 const ws = createServer(app);
 
