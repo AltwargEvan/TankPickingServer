@@ -1,12 +1,14 @@
-import express from "express";
-import { graphqlHTTP } from 'express-graphql';
-import cors from 'cors'
-import { createServer } from "http";
-import { execute, subscribe } from "graphql";
-import { SubscriptionServer } from "subscriptions-transport-ws";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import resolvers from "./src/resolvers.js";
-import typeDefs from "./src/typeDefs.js";
+const express = require("express");
+const { graphqlHTTP } = require('express-graphql');
+const expressPlayground = require('graphql-playground-middleware-express')
+  .default
+const cors = require('cors')
+const { createServer } = require("http");
+const { execute, subscribe } = require("graphql");
+const { SubscriptionServer } = require("subscriptions-transport-ws");
+const { makeExecutableSchema } = require("@graphql-tools/schema");
+const resolvers = require("./src/resolvers.js");
+const typeDefs = require("./src/typeDefs.js");
 
 const PORT = 4000
 const schema = makeExecutableSchema({
@@ -23,6 +25,7 @@ app.use(
     graphiql: { subscriptionEndpoint: `ws://localhost:${PORT}/subscriptions` },
   }),
 );
+app.get('*', expressPlayground({ endpoint: '/graphql' }))
 
 const ws = createServer(app);
 

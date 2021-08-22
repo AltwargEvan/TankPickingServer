@@ -1,8 +1,8 @@
 let matches = [] //data holder. very secure
 
-import { withFilter } from 'graphql-subscriptions'
-import { nanoid } from 'nanoid'
-import { PubSub }  from 'graphql-subscriptions'
+const { withFilter } =require('graphql-subscriptions')
+const { nanoid } =require('nanoid')
+const { PubSub }  =require('graphql-subscriptions')
 const pubsub = new PubSub()
 
 
@@ -161,4 +161,4 @@ const resolvers = {
     }
 }
 
-export default resolvers
+module.exports = resolvers
