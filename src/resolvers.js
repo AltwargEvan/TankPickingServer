@@ -1,8 +1,8 @@
 let matches = [] //data holder. very secure
 
-const { withFilter } =require('graphql-subscriptions')
-const { nanoid } =require('nanoid')
-const { PubSub }  =require('graphql-subscriptions')
+const { withFilter } = require('graphql-subscriptions')
+const { nanoid } = require('nanoid')
+const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
 
 
@@ -71,8 +71,8 @@ const resolvers = {
             }
 
             //handle args
-            const Team1 = { name: args.team1Name, side: "A", logo: args.team1Logo}
-            const Team2 = { name: args.team2Name, side: "D", logo: args.team2Logo }
+            const Team1 = { name: args.team1Name, side: "A", logo: args.team1Logo, color: 'red' }
+            const Team2 = { name: args.team2Name, side: "D", logo: args.team2Logo, color: 'blue' }
             const Format = {
                 playersPerTeam: args.playersPerTeam,
                 tankPickOrder: args.tankPickOrder,
@@ -144,6 +144,31 @@ const resolvers = {
             publishMatchUpdate(match)
             return 'Operation Successful'
         },
+        AdminUndo: (_root, args) => {
+            const match = confirmMatchAdmin(args.key)
+            if (match.turn === 0) return 'Cannot Undo Further'
+            const lastTurn = match.format.tankPickOrder[match.turn - 1]
+            if (lastTurn.charAt(1) === 'A') {
+                match.tankPicks.attack = match.tankPicks.attack.slice(0, match.tankPicks.attack.length - parseInt(lastTurn.charAt(0)))
+            } else {
+                match.tankPicks.defense = match.tankPicks.defense.slice(0, match.tankPicks.defense.length - parseInt(lastTurn.charAt(0)))
+            }
+            match.turn = match.turn - 1
+            publishMatchUpdate(match)
+            return 'Operation Successful'
+        },
+        setTeamLogo: (_root, args) => {
+            const match = confirmMatchAdmin(args.key)
+            match.teams[args.teamNumber].logo = args.logoUrl
+            publishMatchUpdate(match)
+            return `Image updated to ${args.logoUrl}`
+        },
+        setTeamName: (_root, args) => {
+            const match = confirmMatchAdmin(args.key)
+            match.teams[args.teamNumber].name = args.name
+            publishMatchUpdate(match)
+            return `Team ${args.teamNumber} name changed to ${args.name}`
+        }
     },
     Subscription: {
         matchUpdated: {

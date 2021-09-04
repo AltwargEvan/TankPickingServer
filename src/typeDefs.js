@@ -1,4 +1,4 @@
-const { gql } =require('apollo-server-express')
+const { gql } = require('apollo-server-express')
 const typeDefs = gql`
   type Match {
     maps: [String]
@@ -29,6 +29,7 @@ const typeDefs = gql`
     name: String
     side: String
     logo: String
+    color: String
   }
 
   type Keys {
@@ -62,6 +63,19 @@ const typeDefs = gql`
       key: String!
       switchSides: Boolean!
     ): String
+    AdminUndo(
+      key: String!
+    ): String
+    setTeamLogo(
+      teamNumber: Int!
+      logoUrl: String!
+      key: String!
+    ) : String
+    setTeamName(
+      teamNumber: Int!
+      name: String!
+      key: String!
+    ) : String
   }
 
   type Subscription {
