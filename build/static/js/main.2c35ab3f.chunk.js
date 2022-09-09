@@ -963,6 +963,7 @@
             class: "Heavy",
             customImg:
               "https://cdn.discordapp.com/attachments/883788051564855336/883803450415120424/f82_amx_m4_mle1949_ter_image2.png",
+            isMeta: !0,
           },
           {
             label: "E 100",
@@ -1051,11 +1052,9 @@
           },
           {
             label: "Minotauro",
-            tanksggImg:
-              "https://tanks.gg/img/tanks/italy-It23_CC_3.png",
+            tanksggImg: "https://tanks.gg/img/tanks/italy-It23_CC_3.png",
             class: "Tank Destroyer",
-            customImg:
-              "https://tanks.gg/img/tanks/italy-It23_CC_3.png",
+            customImg: "https://tanks.gg/img/tanks/italy-It23_CC_3.png",
             isMeta: !0,
           },
           {
